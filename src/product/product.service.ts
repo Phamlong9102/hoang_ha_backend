@@ -4,7 +4,8 @@ import { ProductEntity } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
-import { Observable } from 'rxjs';
+import { UserEntity } from 'src/auth/entities/user.entity';
+import { Request } from 'express';
 
 @Injectable()
 export class ProductService {
@@ -14,9 +15,12 @@ export class ProductService {
   ) {}
 
   async createProduct(
+    user: UserEntity,
     createProductDto: CreateProductDto,
   ): Promise<ProductEntity> {
-    const savedProduct = await this.productRepository.save(createProductDto);
+    createProductDto.user_created = user;
+    const savedProduct = await this.productRepository.create(createProductDto);
+    await this.productRepository.save(savedProduct);
     return savedProduct;
   }
 
@@ -30,10 +34,7 @@ export class ProductService {
     });
 
     if (!product) {
-      throw new HttpException(
-        { status: HttpStatus.NOT_FOUND, error: 'Product not found' },
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
     }
 
     return product;

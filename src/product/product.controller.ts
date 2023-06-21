@@ -3,27 +3,34 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   HttpException,
   HttpStatus,
   Param,
   Patch,
   Post,
+  Req,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dtos/create-product.dto';
 import { ProductEntity } from './entities/product.entity';
 import { UpdateProductDto } from './dtos/update-product.dto';
 import { DeleteResult, UpdateResult } from 'typeorm';
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
 
 @Controller('product')
 export class ProductController {
   constructor(private productService: ProductService) {}
 
+  @UseGuards(JwtGuard)
   @Post()
   async create(
+    @Request() req,
     @Body() createProductDto: CreateProductDto,
   ): Promise<ProductEntity> {
-    return this.productService.createProduct(createProductDto);
+    return this.productService.createProduct(req.user, createProductDto);
   }
 
   @Get()

@@ -1,4 +1,6 @@
 import { IsNotEmpty, IsNumber, IsString, NotContains } from 'class-validator';
+import { UserModal } from 'src/auth/dtos/user.modal';
+import { UserEntity } from 'src/auth/entities/user.entity';
 
 export class CreateProductDto {
   @IsNotEmpty()
@@ -8,4 +10,6 @@ export class CreateProductDto {
   @IsNotEmpty()
   @IsNumber()
   price: number;
+
+  user_created: UserEntity;
 }

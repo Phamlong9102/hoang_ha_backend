@@ -1,7 +1,10 @@
+import { UserModal } from 'src/auth/dtos/user.modal';
+import { UserEntity } from 'src/auth/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -16,6 +19,9 @@ export class ProductEntity {
 
   @Column()
   price: number;
+
+  @ManyToOne(() => UserEntity, (userEntity) => userEntity.products_created)
+  user_created: UserEntity;
 
   @CreateDateColumn()
   created_at: Date;

@@ -35,8 +35,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
     }
 
     const errorResponse = this.getErrorResponse(status, errorMessage, request);
-    const errorLog = this.getErrorLog(errorResponse, request, exception);
-    this.writeErrorLogToFile(errorLog);
+    // const errorLog = this.getErrorLog(errorResponse, request, exception);
+    // this.writeErrorLogToFile(errorLog);
     response.status(status).json(errorResponse);
   }
 
@@ -52,23 +52,23 @@ export class AllExceptionsFilter implements ExceptionFilter {
     timeStamp: new Date(),
   });
 
-  private getErrorLog = (
-    errorResponse: CustomHttpExceptionResponse,
-    request: Request,
-    exception: unknown,
-  ): string => {
-    const { statusCode, error } = errorResponse;
-    const { method, url } = request;
-    const errorLog = `Response Code: ${statusCode} - Method: ${method} - URL: ${url}\n\n
-      ${JSON.stringify(errorResponse)}\n\n
-      User: ${JSON.stringify(request.body ?? 'Not signed in')}\n\n
-      ${exception instanceof HttpException ? exception.stack : error}\n\n`;
-    return errorLog;
-  };
+  // private getErrorLog = (
+  //   errorResponse: CustomHttpExceptionResponse,
+  //   request: Request,
+  //   exception: unknown,
+  // ): string => {
+  //   const { statusCode, error } = errorResponse;
+  //   const { method, url } = request;
+  //   const errorLog = `Response Code: ${statusCode} - Method: ${method} - URL: ${url}\n\n
+  //     ${JSON.stringify(errorResponse)}\n\n
+  //     User: ${JSON.stringify(request.body ?? 'Not signed in')}\n\n
+  //     ${exception instanceof HttpException ? exception.stack : error}\n\n`;
+  //   return errorLog;
+  // };
 
-  private writeErrorLogToFile = (errorLog: string): void => {
-    fs.appendFile('error.log', errorLog, 'utf8', (err) => {
-      if (err) throw err;
-    });
-  };
+  // private writeErrorLogToFile = (errorLog: string): void => {
+  //   fs.appendFile('error.log', errorLog, 'utf8', (err) => {
+  //     if (err) throw err;
+  //   });
+  // };
 }
