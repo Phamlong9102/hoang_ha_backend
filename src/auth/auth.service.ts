@@ -59,7 +59,9 @@ export class AuthService {
         password,
         user.password,
       );
+
       if (isValidPassword) {
+        delete user.password;
         const accessToken = await this.jwtService.signAsync({
           user,
         });

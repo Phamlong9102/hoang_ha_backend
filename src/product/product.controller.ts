@@ -18,12 +18,16 @@ import { ProductEntity } from './entities/product.entity';
 import { UpdateProductDto } from './dtos/update-product.dto';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/auth/models/role.enum';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @Controller('product')
 export class ProductController {
   constructor(private productService: ProductService) {}
 
-  @UseGuards(JwtGuard)
+  @Roles(Role.USER)
+  @UseGuards(JwtGuard, RolesGuard)
   @Post()
   async create(
     @Request() req,
