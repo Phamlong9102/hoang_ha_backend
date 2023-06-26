@@ -16,7 +16,7 @@ export class AuthService {
   ) {}
 
   async userRegister(userRegisterDto: UserRegisterDto): Promise<UserEntity> {
-    const { email, password, products_created } = userRegisterDto;
+    const { email, password } = userRegisterDto;
     const user = await this.userRepository.findOneBy({
       email: email,
     });
@@ -26,7 +26,6 @@ export class AuthService {
       const user = await this.userRepository.save({
         ...userRegisterDto,
         password: hashedPassword,
-        products_created: [],
       });
 
       delete user.password;
@@ -37,7 +36,7 @@ export class AuthService {
     }
   }
 
-  async checkPassword(
+  async checkValidPassword(
     password: string,
     hashedPassword: string,
   ): Promise<boolean> {
@@ -45,28 +44,28 @@ export class AuthService {
     return isValidPassword;
   }
 
-  async userLogin(userLoginDto: UserLoginDto): Promise<any> {
+  async userLogin(userLoginDto: UserLoginDto): Promise<string> {
     const { email, password } = userLoginDto;
     const user = await this.userRepository.findOneBy({
       email,
     });
 
-    const validPassword = this.checkPassword(password, user.password);
-
     if (!user) {
       throw new HttpException('Could not find the user', HttpStatus.FORBIDDEN);
     }
 
-    const jwt = await this.jwtService.signAsync({
-      user,
-    });
-
-    if (user && validPassword) return jwt;
+    if (user) {
+      const isValidPassword = await this.checkValidPassword(
+        password,
+        user.password,
+      );
+      if (isValidPassword) {
+        const accessToken = await this.jwtService.signAsync({
+          user,
+        });
+        return accessToken;
+      }
+      return `Email or password is incorrect`;
+    }
   }
-
-  // async userDetails(user_id: string): Promise<UserEntity> {
-  //   const user = await this.userRepository.findOneBy({ user_id });
-
-  //   if (user)
-  // }
 }

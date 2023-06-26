@@ -1,4 +1,3 @@
-import { UserModal } from 'src/auth/dtos/user.modal';
 import { UserEntity } from 'src/auth/entities/user.entity';
 import {
   Column,

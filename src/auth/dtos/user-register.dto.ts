@@ -1,5 +1,4 @@
-import { IsEmail, IsISBN, IsNotEmpty, IsString } from 'class-validator';
-import { ProductModal } from 'src/product/dtos/product.modal';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class UserRegisterDto {
   @IsNotEmpty()
@@ -10,6 +9,4 @@ export class UserRegisterDto {
   @IsString()
   @IsNotEmpty()
   password: string;
-
-  products_created: [];
 }
