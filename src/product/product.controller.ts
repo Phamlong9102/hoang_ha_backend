@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Header,
   HttpException,
   HttpStatus,
   Param,
@@ -21,6 +20,7 @@ import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/models/role.enum';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { IsCreatorGuard } from './guards/is-creator.guard';
 
 @Controller('product')
 export class ProductController {
@@ -45,13 +45,15 @@ export class ProductController {
     }
   }
 
-  @Get(':product_id')
-  async findById(
-    @Param('product_id') product_id: string,
-  ): Promise<ProductEntity> {
-    return this.productService.findProductById(product_id);
-  }
+  // @UseGuards(JwtGuard, IsCreatorGuard)
+  // @Get(':product_id')
+  // async findById(
+  //   @Param('product_id') product_id: string,
+  // ): Promise<ProductEntity> {
+  //   return this.productService.findProductById(product_id);
+  // }
 
+  @UseGuards(JwtGuard, IsCreatorGuard)
   @Patch('update/:product_id')
   async update(
     @Param('product_id') product_id: string,
@@ -60,6 +62,7 @@ export class ProductController {
     return this.productService.updateProduct(product_id, updateProductDto);
   }
 
+  @UseGuards(JwtGuard, IsCreatorGuard)
   @Delete('delete/:product_id')
   async delete(@Param('product_id') product_id: string): Promise<DeleteResult> {
     return this.productService.deteleProduct(product_id);

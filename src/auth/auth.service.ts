@@ -70,4 +70,36 @@ export class AuthService {
       return `Email or password is incorrect`;
     }
   }
+
+  async findUserById(user_id: string): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({
+      where: { user_id },
+      relations: ['products_created'],
+    });
+
+    if (!user) {
+      throw new HttpException('Could not find the user', HttpStatus.FORBIDDEN);
+    }
+
+    if (user) {
+      delete user.password;
+      return user;
+    }
+  }
+
+  async throwUserId(user_id: string): Promise<string> {
+    const user = await this.userRepository.findOneBy({
+      user_id,
+    });
+
+    if (!user) {
+      throw new HttpException('Could not find the user', HttpStatus.FORBIDDEN);
+    }
+
+    if (user) {
+      console.log('userId: ', user.user_id);
+
+      return user.user_id;
+    }
+  }
 }

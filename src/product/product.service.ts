@@ -28,17 +28,18 @@ export class ProductService {
     return this.productRepository.find();
   }
 
-  async findProductById(product_id: string): Promise<ProductEntity> {
-    const product = await this.productRepository.findOne({
-      where: { product_id: product_id },
-    });
+  // async findProductById(product_id: string): Promise<ProductEntity> {
+  //   const product = await this.productRepository.findOne({
+  //     where: { product_id: product_id },
+  //     relations: ['products_created'],
+  //   });
 
-    if (!product) {
-      throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
-    }
+  //   if (!product) {
+  //     throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+  //   }
 
-    return product;
-  }
+  //   return product;
+  // }
 
   async updateProduct(
     product_id: string,
@@ -71,5 +72,22 @@ export class ProductService {
     }
 
     return this.productRepository.delete(product_id);
+  }
+
+  async throwCreatorId(product_id: string): Promise<string> {
+    const product = await this.productRepository.findOne({
+      where: { product_id },
+      relations: ['user_created'],
+    });
+
+    if (!product) {
+      throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (product) {
+      console.log('creatorId: ', product.user_created.user_id);
+
+      return product.user_created.user_id;
+    }
   }
 }
